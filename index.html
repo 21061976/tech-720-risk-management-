@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>דוח ניהול סיכונים - פרויקט 720</title>
+    <title>ניהול סיכונים - פרויקט 720: מערכת למידה מותאמת אישית</title>
     <style>
         * {
             margin: 0;
@@ -13,950 +13,1195 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
+            line-height: 1.8;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #2c3e50;
             padding: 20px;
+            color: #2d3748;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.98);
+            background: white;
             border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
         }
 
         .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 50px 40px;
+            padding: 40px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
         }
 
         .header h1 {
-            font-size: 3em;
-            margin-bottom: 15px;
+            font-size: 2.5em;
+            margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .header .subtitle {
-            font-size: 1.4em;
-            opacity: 0.9;
-            margin-bottom: 10px;
+            font-size: 1.3em;
+            opacity: 0.95;
+            margin-top: 10px;
         }
 
-        .date-badge {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            margin-top: 15px;
-        }
-
-        .edit-buttons {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
+        .toolbar {
+            background: #f7fafc;
+            padding: 15px 40px;
             display: flex;
             gap: 10px;
-            flex-direction: column;
+            flex-wrap: wrap;
+            border-bottom: 3px solid #e2e8f0;
+            align-items: center;
         }
 
-        .edit-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+        .btn {
+            padding: 10px 20px;
             border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9em;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 0.95em;
+            font-weight: 600;
             transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .edit-btn:hover {
+        .btn-edit {
+            background: #4299e1;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #3182ce;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-save {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #38a169;
+        }
+
+        .btn-cancel {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #e53e3e;
+        }
+
+        .btn-print {
+            background: #ed8936;
+            color: white;
+        }
+
+        .btn-print:hover {
+            background: #dd6b20;
+        }
+
+        .btn-export {
+            background: #9f7aea;
+            color: white;
+        }
+
+        .btn-export:hover {
+            background: #805ad5;
+        }
+
+        .edit-mode-indicator {
+            background: #fef5e7;
+            color: #d35400;
+            padding: 12px 40px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+            border-bottom: 2px solid #f39c12;
         }
 
         .content {
             padding: 40px;
         }
 
+        .editable {
+            transition: background-color 0.3s ease;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        body.edit-mode .editable:hover {
+            background-color: #fff3cd;
+            cursor: text;
+        }
+
+        body.edit-mode .editable:focus {
+            outline: 2px solid #ffc107;
+            background-color: #fffbea;
+        }
+
         .section {
-            margin: 40px 0;
-        }
-
-        .section-title {
-            font-size: 2em;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #3498db;
-        }
-
-        .risk-category {
+            margin-bottom: 40px;
             background: #f8f9fa;
             padding: 30px;
             border-radius: 15px;
-            margin: 30px 0;
-            border-right: 5px solid #3498db;
+            border-right: 5px solid #667eea;
         }
 
-        .category-title {
-            font-size: 1.5em;
-            color: #2c3e50;
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
             margin-bottom: 20px;
-            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h3 {
+            color: #4a5568;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .legend-box {
+            background: #e8eaf6;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #5c6bc0;
+        }
+
+        .legend-box h3 {
+            color: #3f51b5;
+            margin-bottom: 15px;
+            border: none;
+        }
+
+        .legend-item {
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .legend-icon {
+            font-size: 1.5em;
+            min-width: 40px;
         }
 
         .risk-card {
             background: white;
             padding: 25px;
-            border-radius: 15px;
-            margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .risk-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+            margin: 25px 0;
+            border-radius: 12px;
+            border-right: 6px solid #667eea;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .risk-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 20px;
             flex-wrap: wrap;
+            gap: 15px;
         }
 
         .risk-title {
             font-size: 1.3em;
-            color: #2c3e50;
+            color: #2d3748;
             font-weight: bold;
             flex: 1;
         }
 
-        .severity-badge {
+        .risk-severity {
             padding: 8px 16px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: 0.95em;
+            white-space: nowrap;
         }
 
         .severity-high {
-            background: #e74c3c;
-            color: white;
+            background: #fee;
+            color: #c53030;
         }
 
         .severity-medium {
-            background: #f39c12;
-            color: white;
+            background: #fef5e7;
+            color: #d35400;
         }
 
         .severity-low {
-            background: #27ae60;
-            color: white;
+            background: #e8f5e9;
+            color: #2e7d32;
         }
 
-        .risk-metrics {
-            display: flex;
-            gap: 20px;
-            margin: 15px 0;
-            flex-wrap: wrap;
-        }
-
-        .metric {
-            background: #ecf0f1;
-            padding: 10px 15px;
+        .risk-score {
+            background: #f7fafc;
+            padding: 15px;
             border-radius: 8px;
-            font-size: 0.9em;
+            margin: 15px 0;
+            border-right: 4px solid #4299e1;
         }
 
-        .metric strong {
-            color: #2c3e50;
+        .risk-score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
         }
 
         .risk-description {
-            color: #34495e;
-            line-height: 1.8;
-            margin: 20px 0;
-            padding: 20px;
             background: #f8f9fa;
+            padding: 20px;
             border-radius: 10px;
+            margin: 20px 0;
+            border-right: 4px solid #48bb78;
         }
 
         .risk-impacts, .risk-opportunities {
             margin: 20px 0;
         }
 
-        .subsection-title {
-            font-weight: bold;
-            color: #e74c3c;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-
-        .opportunities-title {
-            color: #27ae60;
+        .risk-impacts h4, .risk-opportunities h4 {
+            color: #2d3748;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .risk-impacts ul, .risk-opportunities ul {
             list-style: none;
-            padding-right: 0;
+            padding-right: 20px;
         }
 
         .risk-impacts li, .risk-opportunities li {
-            padding: 10px 15px;
+            padding: 10px;
             margin: 8px 0;
-            background: #fff;
-            border-radius: 8px;
-            border-right: 4px solid #e74c3c;
+            border-radius: 6px;
+            background: #fff5f5;
+            border-right: 3px solid #fc8181;
         }
 
         .risk-opportunities li {
-            border-right-color: #27ae60;
+            background: #f0fff4;
+            border-right: 3px solid #68d391;
         }
 
-        .risk-impacts li::before {
-            content: '⚠️';
-            margin-left: 10px;
+        .mitigation-actions {
+            margin-top: 25px;
         }
 
-        .risk-opportunities li::before {
-            content: '✅';
-            margin-left: 10px;
+        .mitigation-actions h4 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.1em;
         }
 
-        .mitigation-section {
-            margin-top: 30px;
-            padding: 25px;
-            background: #e8f5e9;
-            border-radius: 15px;
-            border-right: 5px solid #27ae60;
-        }
-
-        .mitigation-title {
-            font-size: 1.2em;
-            color: #27ae60;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .mitigation-item {
-            background: white;
-            padding: 20px;
-            margin: 15px 0;
+        .action-item {
+            background: #edf2f7;
+            padding: 18px;
+            margin: 12px 0;
             border-radius: 10px;
-            border-right: 3px solid #27ae60;
+            border-right: 4px solid #9f7aea;
         }
 
-        .mitigation-item h4 {
-            color: #27ae60;
+        .action-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             margin-bottom: 10px;
         }
 
-        .phase-badge {
-            display: inline-block;
-            padding: 5px 12px;
+        .action-phase {
+            padding: 6px 14px;
             border-radius: 15px;
             font-size: 0.85em;
             font-weight: bold;
-            margin-right: 10px;
+            white-space: nowrap;
         }
 
         .phase-planning {
-            background: #3498db;
-            color: white;
+            background: #e3f2fd;
+            color: #1565c0;
         }
 
         .phase-execution {
-            background: #f39c12;
-            color: white;
+            background: #fff3e0;
+            color: #e65100;
         }
 
         .phase-control {
-            background: #9b59b6;
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+
+        .action-title {
+            font-weight: bold;
+            color: #2d3748;
+            flex: 1;
+        }
+
+        .action-component {
+            background: #fff;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            color: #4a5568;
+            border-right: 3px solid #cbd5e0;
+        }
+
+        .action-component strong {
+            color: #2d3748;
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0 20px 0;
+            font-size: 1.3em;
+            font-weight: bold;
         }
 
         .summary-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin: 30px 0;
-            text-align: center;
+            background: #e8eaf6;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 3px solid #5c6bc0;
         }
 
         .summary-stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
+            margin-top: 20px;
         }
 
-        .stat-item {
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
             text-align: center;
+            border-top: 4px solid #667eea;
         }
 
         .stat-number {
             font-size: 3em;
             font-weight: bold;
-            display: block;
+            color: #667eea;
         }
 
         .stat-label {
-            font-size: 1.1em;
-            opacity: 0.9;
+            color: #4a5568;
+            margin-top: 8px;
+            font-size: 0.95em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:hover {
+            background: #f7fafc;
         }
 
         .footer {
-            background: #2c3e50;
+            background: #2d3748;
             color: white;
-            padding: 30px;
             text-align: center;
+            padding: 30px;
+            margin-top: 40px;
         }
 
-        .editable {
-            cursor: text;
-        }
-
-        .editable:hover {
-            background: rgba(52, 152, 219, 0.1);
-            outline: 1px dashed #3498db;
+        .footer p {
+            margin: 5px 0;
         }
 
         @media print {
-            .edit-buttons {
-                display: none;
-            }
             body {
                 background: white;
+                padding: 0;
             }
+            
+            .toolbar, .edit-mode-indicator {
+                display: none !important;
+            }
+            
             .container {
                 box-shadow: none;
+            }
+            
+            .risk-card, .section {
+                page-break-inside: avoid;
             }
         }
 
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 2em;
+                font-size: 1.8em;
             }
+            
+            .toolbar {
+                justify-content: center;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
             .risk-header {
                 flex-direction: column;
-                align-items: flex-start;
-            }
-            .edit-buttons {
-                position: static;
-                margin-bottom: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="edit-buttons">
-        <button class="edit-btn" onclick="enableEditing()">✏️ מצב עריכה</button>
-        <button class="edit-btn" onclick="window.print()">🖨️ הדפס</button>
-        <button class="edit-btn" onclick="saveAsHTML()">💾 שמור כ-HTML</button>
-    </div>
-
     <div class="container">
-        <header class="header">
-            <h1 class="editable">דוח ניהול סיכונים מקיף</h1>
-            <div class="subtitle editable">פרויקט 720 - מערכת חדשנית לחינוך מותאם אישית</div>
-            <div class="date-badge editable">משרד החינוך • דצמבר 2025</div>
-        </header>
-
-        <div class="content">
-            <!-- Summary Section -->
-            <div class="summary-box">
-                <h2 class="editable">סיכום כמותי - ניהול סיכונים</h2>
-                <div class="summary-stats">
-                    <div class="stat-item">
-                        <span class="stat-number editable">8</span>
-                        <span class="stat-label editable">סה"כ סיכונים</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number editable">5</span>
-                        <span class="stat-label editable">🔴 סיכונים גבוהים</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number editable">3</span>
-                        <span class="stat-label editable">🟠 סיכונים בינוניים</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Category A: Regulatory Risks -->
-            <div class="risk-category">
-                <h3 class="category-title editable">📁 קטגוריה א': סיכונים רגולטוריים וזמנים</h3>
-
-                <!-- Risk 1 -->
-                <div class="risk-card">
-                    <div class="risk-header">
-                        <div class="risk-title editable">1️⃣ עיכובים בתהליכי אישור ועדות ארגז החול</div>
-                        <span class="severity-badge severity-high editable">גבוהה 🔴</span>
-                    </div>
-                    
-                    <div class="risk-metrics">
-                        <div class="metric"><strong>הסתברות:</strong> <span class="editable">9/10</span></div>
-                        <div class="metric"><strong>עוצמת נזק:</strong> <span class="editable">9/10</span></div>
-                        <div class="metric"><strong>חומרה:</strong> <span class="editable">81</span></div>
-                    </div>
-
-                    <div class="risk-description editable">
-                        <strong>תיאור הסיכון:</strong><br>
-                        הפרויקט מתוכנן להתחיל בפברואר 2025, אך נושאי הרגולציה רק כעת (דצמבר) עולים בועדות של ארגז החול. קיים סיכון משמעותי שעיכובים בועדות או צורך בהבהרות נוספות יגרמו לדחייה בלוח הזמנים. בהתאם לחוזר מנכ"ל לאסדרת חדשנות, פרויקטים חדשניים דורשים אישורים מרובים ברמות שונות, והתהליך עלול להימשך זמן רב יותר מהצפוי.
-                    </div>
-
-                    <div class="risk-impacts">
-                        <div class="subsection-title editable">📉 השלכות אפשריות:</div>
-                        <ul>
-                            <li class="editable">דחייה של תחילת הפרויקט בחודשים קריטיים בשנת הלימודים</li>
-                            <li class="editable">פגיעה במוטיבציה של 28 בתי הספר שנבחרו ומוכנים</li>
-                            <li class="editable">אובדן אמון ממורים, מנהלים וספקים שהשקיעו בהכנות</li>
-                            <li class="editable">עלויות נוספות בגין הארכת תקופות הכנה וחוזים עם ספקים</li>
-                        </ul>
-                    </div>
-
-                    <div class="risk-opportunities">
-                        <div class="subsection-title opportunities-title editable">✅ הזדמנויות שנוצרות:</div>
-                        <ul>
-                            <li class="editable">זמן נוסף להכנה טובה יותר של בתי הספר והמורים</li>
-                            <li class="editable">אפשרות לשיפור המערכות והתוכן בהתאם למשוב ראשוני</li>
-                            <li class="editable">הזדמנות לחזק את המסגרת הרגולטורית ולהבטיח עמידה מלאה בדרישות</li>
-                        </ul>
-                    </div>
-
-                    <div class="mitigation-section">
-                        <div class="mitigation-title editable">🔧 פעילויות מתקנות:</div>
-                        
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">הקמת צוות משימה רגולטורי</span></h4>
-                            <p class="editable">הקמת צוות ייעודי שיעבד בצמידות לועדות ארגז החול, יכין את כל התשובות והמסמכים הנדרשים מראש, וידאג לזרז את התהליכים. הצוות יכלול נציגים משפטיים, פדגוגיים וטכנולוגיים.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-execution">⚙️ ביצוע</span><span class="editable">תקשורת שוטפת עם הועדות</span></h4>
-                            <p class="editable">קיום פגישות שבועיות עם נציגי הועדות, הגשת עדכוני התקדמות, ומענה מיידי לכל שאלה או דרישה. יצירת ערוץ תקשורת ישיר ויעיל.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-control">📊 בקרה</span><span class="editable">ניטור יומי של סטטוס האישורים</span></h4>
-                            <p class="editable">מעקב יומי אחר התקדמות בכל ועדה, זיהוי מוקדם של חסמים, והפעלת מנגנוני הסלמה במידת הצורך. דיווח שבועי להנהלה הבכירה.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Risk 2 -->
-                <div class="risk-card">
-                    <div class="risk-header">
-                        <div class="risk-title editable">2️⃣ בניית תקינה חדשה למערכת ייחודית</div>
-                        <span class="severity-badge severity-high editable">גבוהה 🔴</span>
-                    </div>
-                    
-                    <div class="risk-metrics">
-                        <div class="metric"><strong>הסתברות:</strong> <span class="editable">8/10</span></div>
-                        <div class="metric"><strong>עוצמת נזק:</strong> <span class="editable">8/10</span></div>
-                        <div class="metric"><strong>חומרה:</strong> <span class="editable">64</span></div>
-                    </div>
-
-                    <div class="risk-description editable">
-                        <strong>תיאור הסיכון:</strong><br>
-                        פרויקט 720 הוא מערכת מסוג חדש לגמרי - לא רק ספק תוכן, לא רק תל"פ, ולא רק פלטפורמה. הוא משלב את כולם. היעדר תקינה מתאימה עלול להוביל לחוסר בהירות בדרישות, קשיים באישורים, ובעיות בהערכת התאמה. על פי עקרונות RRI, נדרשת מסגרת רגולטורית ברורה שמאזנת בין חדשנות לבין הגנה על האינטרסים של התלמידים והמערכת.
-                    </div>
-
-                    <div class="risk-impacts">
-                        <div class="subsection-title editable">📉 השלכות אפשריות:</div>
-                        <ul>
-                            <li class="editable">חוסר בהירות בדרישות מהספקים והמערכת</li>
-                            <li class="editable">קשיים בביצוע בדיקות איכות ואבטחת מידע</li>
-                            <li class="editable">עיכובים באישורים עקב היעדר קריטריונים ברורים</li>
-                            <li class="editable">סיכון משפטי בהיעדר מסגרת תקינה מחייבת</li>
-                        </ul>
-                    </div>
-
-                    <div class="risk-opportunities">
-                        <div class="subsection-title opportunities-title editable">✅ הזדמנויות שנוצרות:</div>
-                        <ul>
-                            <li class="editable">הזדמנות לעצב תקן חדש שיוביל את השוק הישראלי והעולמי</li>
-                            <li class="editable">יצירת מודל לשיתוף פעולה בין ספקים שונים (best practice)</li>
-                            <li class="editable">הגדרת סטנדרטים גבוהים שיעלו את רמת כל התעשייה</li>
-                        </ul>
-                    </div>
-
-                    <div class="mitigation-section">
-                        <div class="mitigation-title editable">🔧 פעילויות מתקנות:</div>
-                        
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">הקמת ועדת תקינה בינמשרדית</span></h4>
-                            <p class="editable">הקמת ועדה שתכלול נציגים ממשרד החינוך, משרד הכלכלה, רשות החדשנות, מומחי אבטחת מידע, ונציגי ציבור. הוועדה תפתח תקן מותאם למערכות משולבות מסוג 720.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">למידה ממודלים בינלאומיים</span></h4>
-                            <p class="editable">מחקר והשוואה לתקנים בינלאומיים (EdTech Standards, IMS Global, EU regulations) והתאמתם למציאות הישראלית.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-execution">⚙️ ביצוע</span><span class="editable">פיתוח תקן בשלבים</span></h4>
-                            <p class="editable">פיתוח התקן בגישה איטרטיבית: גרסה ראשונית לפיילוט, שיפורים על בסיס ניסיון, וגרסה סופית לאחר שנת ניסוי.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-control">📊 בקרה</span><span class="editable">ועדת מעקב רבעונית</span></h4>
-                            <p class="editable">סקירה רבעונית של התאמת התקן למציאות בשטח, עם אפשרות לעדכונים ושיפורים.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Category B: Operational Risks -->
-            <div class="risk-category">
-                <h3 class="category-title editable">📁 קטגוריה ב': סיכונים תפעוליים וספקים</h3>
-
-                <!-- Risk 3 -->
-                <div class="risk-card">
-                    <div class="risk-header">
-                        <div class="risk-title editable">3️⃣ מחויבות ספקים כאשר משרד החינוך לא משלם בזמן</div>
-                        <span class="severity-badge severity-high editable">גבוהה 🔴</span>
-                    </div>
-                    
-                    <div class="risk-metrics">
-                        <div class="metric"><strong>הסתברות:</strong> <span class="editable">8/10</span></div>
-                        <div class="metric"><strong>עוצמת נזק:</strong> <span class="editable">9/10</span></div>
-                        <div class="metric"><strong>חומרה:</strong> <span class="editable">72</span></div>
-                    </div>
-
-                    <div class="risk-description editable">
-                        <strong>תיאור הסיכון:</strong><br>
-                        קיימת בעיה ידועה של עיכובים בתשלומים ממשרד החינוך לספקים. כאשר ספקי תוכן וטכנולוגיה לא מקבלים תשלום בזמן, הם עלולים להפסיק או להאט שירותים, לצמצם תמיכה טכנית, או אפילו לעזוב את הפרויקט. זהו סיכון קריטי שעלול לפגוע בהמשכיות הפרויקט ובאיכות השירות לבתי הספר.
-                    </div>
-
-                    <div class="risk-impacts">
-                        <div class="subsection-title editable">📉 השלכות אפשריות:</div>
-                        <ul>
-                            <li class="editable">הפסקה או האטה של שירותים קריטיים לבתי הספר</li>
-                            <li class="editable">פגיעה באיכות התמיכה הטכנית והפדגוגית</li>
-                            <li class="editable">יציאת ספקים מהפרויקט וצורך בגיוס ספקים חדשים</li>
-                            <li class="editable">פגיעה במוניטין של משרד החינוך מול תעשיית האדטק</li>
-                            <li class="editable">תביעות משפטיות וסכסוכים חוזיים</li>
-                        </ul>
-                    </div>
-
-                    <div class="risk-opportunities">
-                        <div class="subsection-title opportunities-title editable">✅ הזדמנויות שנוצרות:</div>
-                        <ul>
-                            <li class="editable">הזדמנות לשפר את תהליכי התשלום במשרד החינוך באופן מערכתי</li>
-                            <li class="editable">יצירת מנגנון מימון חלופי דרך קרנות או שותפויות</li>
-                            <li class="editable">בניית מודל עסקי חדש שמפחית תלות בתשלומי הממשלה</li>
-                        </ul>
-                    </div>
-
-                    <div class="mitigation-section">
-                        <div class="mitigation-title editable">🔧 פעילויות מתקנות:</div>
-                        
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">הסדרה תקציבית מוקדמת</span></h4>
-                            <p class="editable">הקצאת תקציב ייעודי לפרויקט 720 עם אישור מראש מהאוצר, והסדרת מנגנון תשלום מזורז לספקים קריטיים. שיתוף פעולה עם חשב משרד החינוך ליצירת מסלול תשלום מקוצר.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">ערבויות ומקדמות לספקים</span></h4>
-                            <p class="editable">מתן מקדמות בשיעור 30-40% לספקים מרכזיים, והסדרת ערבויות בנקאיות או גופי מימון חלופיים שיבטיחו תזרים מזומנים.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-execution">⚙️ ביצוע</span><span class="editable">מעקב אחר תשלומים ויחסי ספקים</span></h4>
-                            <p class="editable">הקמת "שולחן תשלומים" שיעקוב אחר כל חשבונית וחשבון, ידאג לזרז תשלומים, וישמור על תקשורת שוטפת עם הספקים.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-control">📊 בקרה</span><span class="editable">דיווח שבועי על סטטוס תשלומים</span></h4>
-                            <p class="editable">דיווח שבועי להנהלה על מצב התשלומים לכל ספק, זיהוי עיכובים, והפעלת מנגנוני הסלמה במידת הצורך.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Risk 4 -->
-                <div class="risk-card">
-                    <div class="risk-header">
-                        <div class="risk-title editable">4️⃣ חיבור ספקי תוכן נוספים למערכות 720</div>
-                        <span class="severity-badge severity-medium editable">בינונית 🟠</span>
-                    </div>
-                    
-                    <div class="risk-metrics">
-                        <div class="metric"><strong>הסתברות:</strong> <span class="editable">7/10</span></div>
-                        <div class="metric"><strong>עוצמת נזק:</strong> <span class="editable">6/10</span></div>
-                        <div class="metric"><strong>חומרה:</strong> <span class="editable">42</span></div>
-                    </div>
-
-                    <div class="risk-description editable">
-                        <strong>תיאור הסיכון:</strong><br>
-                        החזון של 720 הוא להתחבר לספקי תוכן שונים, לנצל את ההתמחות שלהם בתחומי דעת שונים, ולא לשבור את שוק האדטק בישראל. אך חיבור ספקים נוספים דורש אינטגרציה טכנית מורכבת, הסכמים מסחריים, והבטחת איכות ועקביות. קיים סיכון שהתהליך יהיה איטי מדי או לא יצליח, מה שיגביל את גיוון התוכן והיתרון התחרותי של המערכת.
-                    </div>
-
-                    <div class="risk-impacts">
-                        <div class="subsection-title editable">📉 השלכות אפשריות:</div>
-                        <ul>
-                            <li class="editable">מגבלה בגיוון התוכן ובהתאמה אישית</li>
-                            <li class="editable">תלות במספר מצומצם של ספקים</li>
-                            <li class="editable">יצירת מונופול בפועל שמגביל תחרות</li>
-                            <li class="editable">אובדן התמיכה של חלק מהשוק והתנגדות לפרויקט</li>
-                        </ul>
-                    </div>
-
-                    <div class="risk-opportunities">
-                        <div class="subsection-title opportunities-title editable">✅ הזדמנויות שנוצרות:</div>
-                        <ul>
-                            <li class="editable">יצירת אקוסיסטם פתוח ומשגשג של ספקי תוכן</li>
-                            <li class="editable">הגדלת התחרות מה שמוריד מחירים ומשפר איכות</li>
-                            <li class="editable">מיצוב ישראל כמובילה עולמית בפתרונות EdTech פתוחים</li>
-                        </ul>
-                    </div>
-
-                    <div class="mitigation-section">
-                        <div class="mitigation-title editable">🔧 פעילויות מתקנות:</div>
-                        
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">פיתוח API סטנדרטי ותיעוד מלא</span></h4>
-                            <p class="editable">פיתוח API פתוח ומתועד היטב שיאפשר לכל ספק תוכן להתחבר בקלות. פרסום התיעוד באופן פומבי ויצירת "מדריך המפתח" מפורט.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">תוכנית אינטגרציה מדורגת</span></h4>
-                            <p class="editable">תכנון מסלול אינטגרציה שלבי: התחלה עם 2-3 ספקים עוגן, הרחבה ל-5-7 ספקים במהלך שנה א', ופתיחה מלאה בשנה ב'.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-execution">⚙️ ביצוע</span><span class="editable">תמיכה טכנית לספקים</span></h4>
-                            <p class="editable">הקמת צוות תמיכה טכנית ייעודי שיסייע לספקים חדשים בתהליך האינטגרציה, יפתור בעיות, ויבטיח חווית הצטרפות חיובית.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-control">📊 בקרה</span><span class="editable">מדידת זמני אינטגרציה ושביעות רצון</span></h4>
-                            <p class="editable">מעקב אחר זמן הממוצע לאינטגרציה של ספק חדש, איסוף משוב משביעות רצון, וזיהוי צווארי בקבוק בתהליך.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Risk 5 -->
-                <div class="risk-card">
-                    <div class="risk-header">
-                        <div class="risk-title editable">5️⃣ המשכיות מערכות ושימוש בשנים הבאות</div>
-                        <span class="severity-badge severity-high editable">גבוהה 🔴</span>
-                    </div>
-                    
-                    <div class="risk-metrics">
-                        <div class="metric"><strong>הסתברות:</strong> <span class="editable">7/10</span></div>
-                        <div class="metric"><strong>עוצמת נזק:</strong> <span class="editable">8/10</span></div>
-                        <div class="metric"><strong>חומרה:</strong> <span class="editable">56</span></div>
-                    </div>
-
-                    <div class="risk-description editable">
-                        <strong>תיאור הסיכון:</strong><br>
-                        קיים סיכון שלאחר שנת הפיילוט, המערכות לא יקבלו תקציב המשך, או שהפרויקט יופסק מסיבות תקציביות/מדיניות. בתי ספר, מורים ותלמידים שהשקיעו זמן ומשאבים בלמידת המערכות יאבדו את ההשקעה. כמו כן, ספקים שהשקיעו בפיתוח יפסידו את ההשקעה, מה שיפגע בנכונות העתידית לשתף פעולה עם משרד החינוך.
-                    </div>
-
-                    <div class="risk-impacts">
-                        <div class="subsection-title editable">📉 השלכות אפשריות:</div>
-                        <ul>
-                            <li class="editable">תסכול עמוק בבתי ספר שהשקיעו זמן ומאמץ</li>
-                            <li class="editable">אובדן אמון במשרד החינוך מצד המורים והמנהלים</li>
-                            <li class="editable">פגיעה קשה במוניטין של הפרויקט ובנכונות להצטרף לפרויקטים עתידיים</li>
-                            <li class="editable">הפסדים כלכליים לספקים והרתעה מפרויקטים עתידיים</li>
-                        </ul>
-                    </div>
-
-                    <div class="risk-opportunities">
-                        <div class="subsection-title opportunities-title editable">✅ הזדמנויות שנוצרות:</div>
-                        <ul>
-                            <li class="editable">יצירת מודל מימון קיים (sustainable) שלא תלוי רק בתקציב ממשלתי</li>
-                            <li class="editable">פיתוח מנגנוני מימון חלופיים: שותפויות, תרומות, מכירת שירותים</li>
-                            <li class="editable">הוכחת הערך של הפרויקט באופן שיבטיח תקצוב המשך</li>
-                        </ul>
-                    </div>
-
-                    <div class="mitigation-section">
-                        <div class="mitigation-title editable">🔧 פעילויות מתקנות:</div>
-                        
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">הבטחת תקציב רב-שנתי</span></h4>
-                            <p class="editable">קבלת התחייבות תקציבית לפחות ל-3 שנים מהאוצר, כולל תוכנית הרחבה מפורטת ומתוקצבת. יצירת קו תקציבי ייעודי שלא ניתן להעביר לצרכים אחרים.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">פיתוח מודל מימון משולב</span></h4>
-                            <p class="editable">חיפוש מקורות מימון נוספים: קרנות זרות, שותפויות עם ארגוני חינוך, מכירת שירותי ייעוץ בינלאומיים, מודל freemium לאחר הפיילוט.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-execution">⚙️ ביצוע</span><span class="editable">תיעוד הצלחות ומדידת השפעה</span></h4>
-                            <p class="editable">תיעוד מתמיד של הצלחות, שיפורים בהישגים, ומשוב חיובי מבתי ספר. יצירת "תיק ראיות" חזק שיוכיח את הערך והצדקת ההמשך.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-control">📊 בקרה</span><span class="editable">סקירות תקציביות תקופתיות</span></h4>
-                            <p class="editable">פגישות רבעוניות עם האוצר והנהלת משרד החינוך להצגת התקדמות, מדידת ROI, והבטחת המשכיות תקציבית.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Category C: Scaling Risks -->
-            <div class="risk-category">
-                <h3 class="category-title editable">📁 קטגוריה ג': סיכוני הרחבה והתפשטות (Scaling)</h3>
-
-                <!-- Risk 6 -->
-                <div class="risk-card">
-                    <div class="risk-header">
-                        <div class="risk-title editable">6️⃣ מעבר מסקייל קטן (28 בתי ספר) לסקייל רחב</div>
-                        <span class="severity-badge severity-high editable">גבוהה 🔴</span>
-                    </div>
-                    
-                    <div class="risk-metrics">
-                        <div class="metric"><strong>הסתברות:</strong> <span class="editable">9/10</span></div>
-                        <div class="metric"><strong>עוצמת נזק:</strong> <span class="editable">8/10</span></div>
-                        <div class="metric"><strong>חומרה:</strong> <span class="editable">72</span></div>
-                    </div>
-
-                    <div class="risk-description editable">
-                        <strong>תיאור הסיכון:</strong><br>
-                        הפרויקט מתחיל ב-28 בתי ספר שנבחרו בקפידה, עם מוטיבציה גבוהה, וליווי צמוד (פדגוגי, הטמעה, ניהול מוצר). בנוסף, עובדי ההוראה מקבלים תוספת שעות. כאשר נרצה להרחיב למאות או אלפי בתי ספר, לא יהיה אפשר לספק אותה רמת ליווי, ולא תמיד המוטיבציה תהיה זהה. הפער בין תנאי הפיילוט לתנאי ההרחבה עלול להוביל לירידה באיכות היישום ולאכזבה.
-                    </div>
-
-                    <div class="risk-impacts">
-                        <div class="subsection-title editable">📉 השלכות אפשריות:</div>
-                        <ul>
-                            <li class="editable">ירידה משמעותית באיכות ההטמעה ובשביעות רצון מורים</li>
-                            <li class="editable">כישלון בבתי ספר שאין להם מוטיבציה או משאבים</li>
-                            <li class="editable">תדמית שלילית של הפרויקט: "עובד רק בפיילוט"</li>
-                            <li class="editable">עומס על צוות הליווי וחוסר יכולת לספק תמיכה לכולם</li>
-                        </ul>
-                    </div>
-
-                    <div class="risk-opportunities">
-                        <div class="subsection-title opportunities-title editable">✅ הזדמנויות שנוצרות:</div>
-                        <ul>
-                            <li class="editable">פיתוח מודל הרחבה חכם שיכול להיות דוגמא עולמית</li>
-                            <li class="editable">בניית קהילת מורים ומנהלים שילוו זה את זה (peer support)</li>
-                            <li class="editable">שימוש בטכנולוגיה (AI, אוטומציה) לצמצום הצורך בליווי אנושי</li>
-                        </ul>
-                    </div>
-
-                    <div class="mitigation-section">
-                        <div class="mitigation-title editable">🔧 פעילויות מתקנות:</div>
-                        
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">תכנון מסלול הרחבה מדורג</span></h4>
-                            <p class="editable">תכנון הרחבה בשלבים: שנה א' - 28 בתי ספר עם ליווי מלא. שנה ב' - 100 בתי ספר עם ליווי בינוני והדרכת peer mentors. שנה ג' - 300 בתי ספר עם ליווי מינימלי וקהילת תמיכה עצמית.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">פיתוח תשתיות תמיכה סקיילבליות</span></h4>
-                            <p class="editable">בניית פורטל עזרה מקוון, סרטוני הדרכה, FAQ אינטראקטיבי, צ'אטבוט AI לתמיכה, וקהילת מורים מקוונת. הפחתת התלות בליווי אנושי.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">קריטריוני מוכנות לבתי ספר</span></h4>
-                            <p class="editable">הגדרת קריטריונים ברורים למוכנות: תשתית טכנולוגית, מוטיבציה של צוות, מנהל תומך, הקצאת זמן. בתי ספר שלא עומדים בקריטריונים לא יצטרפו עד שיהיו מוכנים.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-execution">⚙️ ביצוע</span><span class="editable">הכשרת מורים מובילים כמדריכים</span></h4>
-                            <p class="editable">זיהוי והכשרת מורים מצטיינים מהפיילוט שישמשו כ-"שגרירים" ו-peer mentors בהרחבה. יצירת רשת של 50-100 מדריכים מהשטח.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-control">📊 בקרה</span><span class="editable">מדידת הצלחה לפי קבוצות</span></h4>
-                            <p class="editable">מדידה נפרדת של הצלחת כל גל הרחבה: בתי ספר מהפיילוט, גל א', גל ב' וכו'. זיהוי פערים מוקדם ותיקון מהיר.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Risk 7 -->
-                <div class="risk-card">
-                    <div class="risk-header">
-                        <div class="risk-title editable">7️⃣ הרחבה מ-2 תחומי דעת לכל התחומים ולשכבות נוספות</div>
-                        <span class="severity-badge severity-medium editable">בינונית 🟠</span>
-                    </div>
-                    
-                    <div class="risk-metrics">
-                        <div class="metric"><strong>הסתברות:</strong> <span class="editable">7/10</span></div>
-                        <div class="metric"><strong>עוצמת נזק:</strong> <span class="editable">6/10</span></div>
-                        <div class="metric"><strong>חומרה:</strong> <span class="editable">42</span></div>
-                    </div>
-
-                    <div class="risk-description editable">
-                        <strong>תיאור הסיכון:</strong><br>
-                        הפיילוט מתמקד ב-2 תחומי דעת (מתמטיקה ומדעים) בכיתות ז'. הרחבה לכל תחומי הדעת (לשון, אנגלית, היסטוריה, אזרחות, אומנות וכו') ולשכבות גיל נוספות (ח'-ט', ובעתיד גם כיתות אחרות) מחייבת פיתוח תוכן עצום, התאמה פדגוגית שונה לכל תחום, ועבודה עם מפמ"רים רבים בעלי גישות שונות. קיים סיכון של עומס, איכות לא אחידה, וקשיי תיאום.
-                    </div>
-
-                    <div class="risk-impacts">
-                        <div class="subsection-title editable">📉 השלכות אפשריות:</div>
-                        <ul>
-                            <li class="editable">פיתוח תוכן באיכות נמוכה או לא מתאים בחלק מהתחומים</li>
-                            <li class="editable">קשיי תיאום בין מפמ"רים ואגפים שונים</li>
-                            <li class="editable">עומס על צוות הפרויקט וספקי התוכן</li>
-                            <li class="editable">הארכת לוחות זמנים והעלאת עלויות</li>
-                        </ul>
-                    </div>
-
-                    <div class="risk-opportunities">
-                        <div class="subsection-title opportunities-title editable">✅ הזדמנויות שנוצרות:</div>
-                        <ul>
-                            <li class="editable">יצירת מאגר תוכן עצום שיהיה נכס לאומי</li>
-                            <li class="editable">פיתוח מתודולוגיה להרחבה שניתנת לשכפול בתחומים נוספים</li>
-                            <li class="editable">שיתוף פעולה בינתחומי שיעשיר את הפדגוגיה</li>
-                        </ul>
-                    </div>
-
-                    <div class="mitigation-section">
-                        <div class="mitigation-title editable">🔧 פעילויות מתקנות:</div>
-                        
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">מפת דרכים מדורגת לתחומי דעת</span></h4>
-                            <p class="editable">תכנון מפורט: שנה א' - מתמטיקה ומדעים בז'. שנה ב' - הוספת לשון ואנגלית בז' והרחבה לח'. שנה ג' - הוספת היסטוריה ואזרחות והרחבה לט'. כל תחום נכנס רק לאחר הוכחת הצלחה בקודם.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">צוותים ייעודיים לכל תחום דעת</span></h4>
-                            <p class="editable">הקמת צוות פיתוח ייעודי לכל תחום: מפמ"ר + מומחי תוכן + מפתחים + מעצבים פדגוגיים. כל צוות עובד במקביל אך בקצב עצמאי.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-execution">⚙️ ביצוע</span><span class="editable">פיילוטים מקבילים לתחומים חדשים</span></h4>
-                            <p class="editable">כל תחום דעת חדש עובר פיילוט קטן (5-10 בתי ספר) לפני הרחבה. למידה מהניסיון ושיפורים לפני Scale up.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-control">📊 בקרה</span><span class="editable">הערכה נפרדת לכל תחום דעת</span></h4>
-                            <p class="editable">מדידת איכות, שביעות רצון, והשפעה בכל תחום בנפרד. תחום שלא עומד בסטנדרטים מושהה עד לשיפור.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Risk 8 -->
-                <div class="risk-card">
-                    <div class="risk-header">
-                        <div class="risk-title editable">8️⃣ אופי השוק והשפעה על תעשיית האדטק בישראל</div>
-                        <span class="severity-badge severity-medium editable">בינונית 🟠</span>
-                    </div>
-                    
-                    <div class="risk-metrics">
-                        <div class="metric"><strong>הסתברות:</strong> <span class="editable">6/10</span></div>
-                        <div class="metric"><strong>עוצמת נזק:</strong> <span class="editable">5/10</span></div>
-                        <div class="metric"><strong>חומרה:</strong> <span class="editable">30</span></div>
-                    </div>
-
-                    <div class="risk-description editable">
-                        <strong>תיאור הסיכון:</strong><br>
-                        השוק הנוכחי מאופיין במערכות ספציפיות: ספק תוכן, תל"פ, פלטפורמה ללא תוכן. פרויקט 720 הולך לכיוון אחר - מערכת משולבת שמחברת ספקי תוכן שונים. יש חשש שחברות קיימות יראו בכך איום על המודל העסקי שלהן ויתנגדו, או שהפרויקט ייצור מונופול בפועל ויפגע בתחרות. מצד שני, אם הפרויקט יצליח, הוא יכול לשנות לטובה את כל השוק ולאפשר התמחות של כל ספק בתחום המומחיות שלו.
-                    </div>
-
-                    <div class="risk-impacts">
-                        <div class="subsection-title editable">📉 השלכות אפשריות:</div>
-                        <ul>
-                            <li class="editable">התנגדות של חברות אדטק קיימות והשפעה על משרד החינוך</li>
-                            <li class="editable">לובינג שלילי וניסיונות לעכב או להפיל את הפרויקט</li>
-                            <li class="editable">יצירת מונופול בלתי מכוון שפוגע בתחרות החופשית</li>
-                            <li class="editable">פגיעה בחברות קטנות ובינוניות שלא יכולות להתאים את עצמן</li>
-                        </ul>
-                    </div>
-
-                    <div class="risk-opportunities">
-                        <div class="subsection-title opportunities-title editable">✅ הזדמנויות שנוצרות:</div>
-                        <ul>
-                            <li class="editable">שינוי מבני חיובי בתעשיית האדטק הישראלית</li>
-                            <li class="editable">יצירת אקוסיסטם בריא יותר עם התמחויות ברורות</li>
-                            <li class="editable">מיצוב ישראל כמובילה עולמית בפתרונות אינטגרטיביים</li>
-                            <li class="editable">הגדלת השוק הכולל כשכל ספק יכול להתמקד במה שהוא עושה הכי טוב</li>
-                        </ul>
-                    </div>
-
-                    <div class="mitigation-section">
-                        <div class="mitigation-title editable">🔧 פעילויות מתקנות:</div>
-                        
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">שיתוף התעשייה בעיצוב</span></h4>
-                            <p class="editable">הקמת פורום התעשייה עם נציגים מחברות אדטק גדולות וקטנות. מעורבותם בעיצוב המודל, ה-API, והתקנים. יצירת תחושת בעלות משותפת.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-planning">📐 תכנון</span><span class="editable">מדיניות תחרות הוגנת</span></h4>
-                            <p class="editable">הגדרת כללים ברורים למניעת מונופול: אף ספק לא יכול לספק יותר מ-30% מהתוכן הכולל. עידוד כניסה של ספקים חדשים וקטנים.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-execution">⚙️ ביצוע</span><span class="editable">תמיכה במעבר של חברות קיימות</span></h4>
-                            <p class="editable">הצעת תמיכה טכנית, הכשרות, ואפילו מימון חלקי לחברות קיימות שרוצות להסתגל למודל החדש. יצירת win-win.</p>
-                        </div>
-
-                        <div class="mitigation-item">
-                            <h4><span class="phase-badge phase-control">📊 בקרה</span><span class="editable">ניטור ריכוזיות וגיוון</span></h4>
-                            <p class="editable">מעקב שוטף אחר התפלגות השוק: כמה ספקים פעילים, מה נתח השוק של כל אחד, האם יש גיוון מספיק. התערבות במידת הצורך.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="header">
+            <h1 class="editable">⚠️ ניהול סיכונים</h1>
+            <div class="subtitle editable">פרויקט 720: מערכת טכנולוגית למידה מותאמת אישית - פיילוט</div>
         </div>
 
-        <footer class="footer">
-            <p class="editable">פיתוח ועיצוב המוצר: ד"ר אסף אוזן</p>
-            <p class="editable" style="margin-top: 10px; font-size: 0.9em;">© 2025 משרד החינוך - מערכת לניהול סיכונים בחדשנות חינוכית</p>
-        </footer>
+        <div class="toolbar">
+            <button class="btn btn-edit" onclick="toggleEditMode()">✏️ מצב עריכה</button>
+            <button class="btn btn-save" onclick="saveChanges()" style="display:none;">💾 שמור שינויים</button>
+            <button class="btn btn-cancel" onclick="cancelEdit()" style="display:none;">❌ בטל שינויים</button>
+            <button class="btn btn-print" onclick="window.print()">🖨️ הדפס</button>
+            <button class="btn btn-export" onclick="exportHTML()">📥 ייצא HTML</button>
+        </div>
+
+        <div class="edit-mode-indicator">
+            ✏️ מצב עריכה פעיל
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>📌 הקשר הפרויקט</h2>
+                
+                <div class="editable">
+                    <p><strong>פרויקט 720</strong> הוא מערכת טכנולוגית חדשנית למידה מותאמת אישית, המבוססת על ארכיטקטורה מודולרית וגמישה. המערכת מאפשרת למורים לתכנן אירועי למידה מותאמים אישית לכל תלמיד, תוך מעקב דינמי אחר התקדמות ומתן משוב בזמן אמת.</p>
+                </div>
+
+                <h3 class="editable">🎯 4 התהליכים המרכזיים במערכת:</h3>
+                <div class="editable">
+                    <ol style="padding-right: 20px; line-height: 2;">
+                        <li><strong>תכנון אירוע למידה מודולרי</strong> - כלים ליצירת תבניות למידה מותאמות אישית עם ספריית תבניות, עיצוב אינטואיטיבי, וקישור לפרופילי תלמידים.</li>
+                        <li><strong>עיצוב מסלול הלמידה ואירועי הלמידה</strong> - ליווי התקדמות הלומד עם התאמות דינמיות, ניטור חכם, ודוחות מפורטים.</li>
+                        <li><strong>השתתפות בתהליכי למידה אישיים</strong> - ממשק אינטראקטיבי להתערבות בזמן אמת, תמיכה בסביבות היברידיות, וניהול קהילת לומדים.</li>
+                        <li><strong>תמיכה בניהול משוב והערכת תהליכי ליווי</strong> - מערכת לניהול אירועי משוב, הערכת איכות הליווי, ושילוב נתוני הערכה דינמיים.</li>
+                    </ol>
+                </div>
+
+                <h3 class="editable">🎯 מטרות הפרויקט:</h3>
+                <div class="editable">
+                    <ul style="padding-right: 20px; line-height: 2;">
+                        <li>הטמעת למידה מותאמת אישית בקנה מידה ארצי</li>
+                        <li>שיפור הישגי תלמידים והתאמת התוכן לסגנונות למידה שונים</li>
+                        <li>העצמת מורים בכלים טכנולוגיים מתקדמים לליווי פדגוגי</li>
+                        <li>יצירת מערכת דינמית המבוססת על נתונים ומשוב בזמן אמת</li>
+                        <li>קידום שיתוף פעולה ולמידה קהילתית</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="legend-box">
+                <h3>📋 מקרא שלבי פיילוט לפעילויות מתקנות:</h3>
+                <div class="legend-item">
+                    <span class="legend-icon">📐</span>
+                    <div>
+                        <strong>תכנון</strong><br>
+                        <span style="font-size: 0.9em; color: #4a5568;">הגדרת עקרונות, נהלים וקריטריונים מראש</span>
+                    </div>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">⚙️</span>
+                    <div>
+                        <strong>ביצוע</strong><br>
+                        <span style="font-size: 0.9em; color: #4a5568;">יישום בזמן אמת במהלך הפיילוט</span>
+                    </div>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon">📊</span>
+                    <div>
+                        <strong>בקרה</strong><br>
+                        <span style="font-size: 0.9em; color: #4a5568;">מדידה, ניטור והערכה שוטפת</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-header">
+                📁 קטגוריה א': סיכונים טכנולוגיים ותפעוליים
+            </div>
+
+            <div class="risk-card">
+                <div class="risk-header">
+                    <div class="risk-title editable">1️⃣ אתגר טכנולוגי: כשלים במערכת ותקלות טכניות</div>
+                    <div class="risk-severity severity-high editable">גבוהה 🔴</div>
+                </div>
+
+                <div class="risk-score">
+                    <strong>חישוב חומרה:</strong>
+                    <div class="risk-score-grid">
+                        <div class="score-item">
+                            <div class="editable">הסתברות</div>
+                            <div class="score-value editable">8/10</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="editable">עוצמת נזק</div>
+                            <div class="score-value editable">9/10</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="editable">חומרה</div>
+                            <div class="score-value editable">72</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-description">
+                    <strong>🔗 קשור למטרה:</strong> <span class="editable">תהליכים 1, 2, 3 (תכנון אירוע למידה, עיצוב מסלול למידה, השתתפות בזמן אמת - כולם דורשים זמינות מערכת רציפה)</span>
+                </div>
+
+                <div class="risk-description">
+                    <strong>תיאור הסיכון:</strong>
+                    <p class="editable">המערכת כוללת ממשקים מורכבים: כלי עריכה ויזואלי בשיטת גרירה ושיבוץ, ניטור חכם בזמן אמת, ממשק ניהול אינטראקטיבי, ומערכות משוב דינמיות. תקלה בכל רכיב עלולה לשבש את כל שרשרת תהליכי הלמידה. במיוחד קריטי: <strong>הקישור לפרופילי תלמידים</strong> והצעת <strong>התאמות דינמיות</strong> שדורשות עיבוד נתונים בזמן אמת.</p>
+                </div>
+
+                <div class="risk-impacts">
+                    <h4>📉 השלכות אפשריות:</h4>
+                    <ul>
+                        <li class="editable">מורים לא יכולים ליצור או לערוך אירועי למידה (תהליך 1)</li>
+                        <li class="editable">אובדן נתוני מעקב והתקדמות תלמידים (תהליך 2)</li>
+                        <li class="editable">חוסר יכולת להתערב ולהנחות בזמן אמת (תהליך 3)</li>
+                        <li class="editable">אובדן אמון ופגיעה בחוויית משתמש</li>
+                    </ul>
+                </div>
+
+                <div class="mitigation-actions">
+                    <h4>🔧 פעילויות מתקנות:</h4>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-planning">📐 תכנון</span>
+                            <span class="action-title editable">א. בדיקות QA מקיפות לפני ההשקה</span>
+                        </div>
+                        <p class="editable">בדיקות מקיפות של כל רכיב: ממשק עיצוב אינטואיטיבי (גרירה ושיבוץ), קישור לפרופילי תלמידים, ניהול רצף למידה, וכלי הערכה משולבים. בדיקות עומס על מערכת המלצות אוטומטיות.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">מורכבות האינטגרציה בין ממשק העיצוב לפרופילי התלמידים (תהליך 1)</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-planning">📐 תכנון</span>
+                            <span class="action-title editable">ב. הגדרת תוכנית חירום ואסטרטגיית גיבוי</span>
+                        </div>
+                        <p class="editable">תסריטי חירום לכשל בממשק הניהול האינטראקטיבי: מה קורה כשמורה לא יכול לצפות בהתקדמות תלמיד? גיבוי לנתוני מעקב ולוחות דיון. נוהל שחזור למצב רצף למידה אחרון שנשמר.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">אובדן נתוני מעקב והתקדמות (תהליך 2 - ניטור חכם)</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-execution">⚙️ ביצוע</span>
+                            <span class="action-title editable">ג. תמיכה טכנית מהירה ב-SLA מוגדר</span>
+                        </div>
+                        <p class="editable">מוקד תמיכה עם SLA: תקלות בממשק ניהול אינטראקטיבי (תהליך 3) - תגובה תוך שעה. תקלות במערכת משוב (תהליך 4) - תגובה תוך 2 שעות. כשל מלא במערכת - פתרון תוך 4 שעות.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">חוסר יכולת להתערב בזמן אמת במהלך למידה (תהליך 3)</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-control">📊 בקרה</span>
+                            <span class="action-title editable">ד. ניטור יציבות המערכת בזמן אמת</span>
+                        </div>
+                        <p class="editable">ניטור ספציפי: זמני תגובה של ממשק עיצוב אינטואיטיבי, שיעור הצלחה של קישור לפרופילי תלמידים, זמן עיבוד המלצות אוטומטיות. אזעקות על שיעור שגיאות מעל 2%.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">זיהוי מוקדם של בעיות בממשק התכנון והקישור לפרופילים (תהליך 1)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="risk-card">
+                <div class="risk-header">
+                    <div class="risk-title editable">2️⃣ אתגר אבטחה: סיכוני פרטיות ואבטחת מידע</div>
+                    <div class="risk-severity severity-high editable">גבוהה 🔴</div>
+                </div>
+
+                <div class="risk-score">
+                    <strong>חישוב חומרה:</strong>
+                    <div class="risk-score-grid">
+                        <div class="score-item">
+                            <div class="editable">הסתברות</div>
+                            <div class="score-value editable">7/10</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="editable">עוצמת נזק</div>
+                            <div class="score-value editable">10/10</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="editable">חומרה</div>
+                            <div class="score-value editable">70</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-description">
+                    <strong>🔗 קשור למטרה:</strong> <span class="editable">תהליכים 2, 4 (עיצוב מסלול למידה - היסטוריית למידה ויעדים; ניהול משוב - נתוני הערכה דינמיים)</span>
+                </div>
+
+                <div class="risk-description">
+                    <strong>תיאור הסיכון:</strong>
+                    <p class="editable">המערכת אוספת מידע רגיש בהיקף רחב: <strong>פרופילי תלמידים</strong> (תהליך 1), <strong>היסטוריית למידה ויעדים</strong> (תהליך 2), <strong>נתוני הערכה דינמיים</strong> (תהליך 4), ו<strong>קשרים חברתיים בקהילת לומדים</strong> (תהליך 3). כל דליפה עלולה לחשוף מידע אישי רגיש ביותר על קטינים, כולל ביצועים, התנהגות, וקשיים לימודיים.</p>
+                </div>
+
+                <div class="risk-impacts">
+                    <h4>📉 השלכות אפשריות:</h4>
+                    <ul>
+                        <li class="editable">חשיפת נתוני ביצועים והתקדמות של תלמידים</li>
+                        <li class="editable">דליפת מידע על קשיים לימודיים ותמיכה מיוחדת</li>
+                        <li class="editable">נזק משפטי חמור (GDPR, חוק הגנת הפרטיות בישראל)</li>
+                        <li class="editable">אובדן אמון מוחלט מהורים ומורים</li>
+                    </ul>
+                </div>
+
+                <div class="mitigation-actions">
+                    <h4>🔧 פעילויות מתקנות:</h4>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-planning">📐 תכנון</span>
+                            <span class="action-title editable">א. ביצוע הערכת סיכוני אבטחה (Security Assessment)</span>
+                        </div>
+                        <p class="editable">DPIA ממוקד: זיהוי רמת הרגישות של כל סוג מידע - פרופילי תלמידים, היסטוריית למידה, נתוני הערכה, קשרים חברתיים. הגדרת רמות הצפנה והרשאות גישה לפי רגישות.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">חשיפה של היסטוריית למידה ויעדים אישיים (תהליך 2)</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-planning">📐 תכנון</span>
+                            <span class="action-title editable">ב. הטמעת הצפנה מקצה לקצה ובקרות גישה</span>
+                        </div>
+                        <p class="editable">הצפנה של כל נתוני הערכה דינמיים (תהליך 4) ונתוני ניטור חכם (תהליך 2). הגבלת גישה: מורה רואה רק את תלמידיו, מנהל רק את בית ספרו. עקרון Least Privilege מחמיר.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">גישה לא מורשית לנתוני הערכה ומשוב (תהליך 4)</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-execution">⚙️ ביצוע</span>
+                            <span class="action-title editable">ג. הדרכות אבטחה למשתמשים</span>
+                        </div>
+                        <p class="editable">הדרכה ספציפית למורים: כיצד לשתף מסכים במהלך ממשק ניהול אינטראקטיבי (תהליך 3) מבלי לחשוף מידע רגיש של תלמידים אחרים. ניהול הרשאות בקהילת לומדים.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">חשיפה בלתי מכוונת של מידע בממשק האינטראקטיבי (תהליך 3)</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-control">📊 בקרה</span>
+                            <span class="action-title editable">ד. ניטור אבטחה וביקורות תקופתיות</span>
+                        </div>
+                        <p class="editable">לוגים מפורטים: מי ניגש לאיזה פרופיל תלמיד (תהליך 1), מי צפה בהיסטוריית למידה (תהליך 2), מי קרא דוחות הערכה (תהליך 4). אזעקות על גישה חריגה.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">זיהוי ניסיונות גישה לא מורשית לנתונים רגישים בכל התהליכים</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-header">
+                📁 קטגוריה ב': סיכונים פדגוגיים ואנושיים
+            </div>
+
+            <div class="risk-card">
+                <div class="risk-header">
+                    <div class="risk-title editable">3️⃣ אתגר הטמעה: התנגדות ממורים וקושי בשינוי תרבותי</div>
+                    <div class="risk-severity severity-high editable">גבוהה 🔴</div>
+                </div>
+
+                <div class="risk-score">
+                    <strong>חישוב חומרה:</strong>
+                    <div class="risk-score-grid">
+                        <div class="score-item">
+                            <div class="editable">הסתברות</div>
+                            <div class="score-value editable">9/10</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="editable">עוצמת נזק</div>
+                            <div class="score-value editable">7/10</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="editable">חומרה</div>
+                            <div class="score-value editable">63</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-description">
+                    <strong>🔗 קשור למטרה:</strong> <span class="editable">תהליכים 1, 3, 4 (תכנון אירועי למידה - שינוי מהותי בשיטת העבודה; ממשק ניהול אינטראקטיבי - דרישה למיומנות דיגיטלית; ניהול משוב - תרבות מבוססת נתונים)</span>
+                </div>
+
+                <div class="risk-description">
+                    <strong>תיאור הסיכון:</strong>
+                    <p class="editable">המעבר מהוראה מסורתית לשימוש ב<strong>ממשק עיצוב אינטואיטיבי</strong> (תהליך 1), <strong>ממשק ניהול אינטראקטיבי בזמן אמת</strong> (תהליך 3), ו<strong>מערכת משוב דינמית</strong> (תהליך 4) דורש שינוי תרבותי עמוק. מורים רגילים ל"שליטה מלאה" עלולים להרגיש מאוימים מהמלצות אוטומטיות ומניטור חכם.</p>
+                </div>
+
+                <div class="risk-impacts">
+                    <h4>📉 השלכות אפשריות:</h4>
+                    <ul>
+                        <li class="editable">שימוש שטחי בממשק העיצוב - יצירת תבניות בסיסיות בלבד</li>
+                        <li class="editable">התעלמות מהמלצות המערכת ומניטור חכם</li>
+                        <li class="editable">אי-שימוש בממשק הניהול האינטראקטיבי והתערבויות בזמן אמת</li>
+                        <li class="editable">כישלון בהשגת יעדי התאמה אישית</li>
+                    </ul>
+                </div>
+
+                <div class="risk-impacts">
+                    <h4>💡 הזדמנויות:</h4>
+                    <ul>
+                        <li class="editable">לזהות "מורים שגרירים" שיובילו את השינוי</li>
+                        <li class="editable">לפתח קהילת תרגול מקצועית סביב המערכת</li>
+                        <li class="editable">ללמוד מהשטח ולשפר את החוויה למשתמשים</li>
+                    </ul>
+                </div>
+
+                <div class="mitigation-actions">
+                    <h4>🔧 פעילויות מתקנות:</h4>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-planning">📐 תכנון</span>
+                            <span class="action-title editable">א. מיפוי מוקדם של חששות וצרכים</span>
+                        </div>
+                        <p class="editable">סקרים ממוקדים: רמת הנוחות עם גרירה-ושיבוץ, ניסיון קודם בממשקי ניהול אינטראקטיביים, חששות מהמלצות אוטומטיות. זיהוי מורים שצריכים ליווי אינטנסיבי.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">פערים במיומנות עם ממשק עיצוב אינטואיטיבי (תהליך 1)</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-planning">📐 תכנון</span>
+                            <span class="action-title editable">ב. פיתוח תוכנית הכשרה מדורגת ומותאמת</span>
+                        </div>
+                        <p class="editable">שלוש רמות הכשרה: (1) בסיס - יצירת אירוע למידה פשוט; (2) מתקדם - ממשק ניהול אינטראקטיבי והתערבויות; (3) מומחה - ניתוח נתוני משוב והתאמות דינמיות.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">קושי בשימוש בממשק ניהול אינטראקטיבי (תהליך 3)</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-execution">⚙️ ביצוע</span>
+                            <span class="action-title editable">ג. יצירת קהילת תרגול ורשת תמיכה</span>
+                        </div>
+                        <p class="editable">פורום לשיתוף תבניות למידה מוצלחות, דוגמאות להתערבויות יעילות בזמן אמת, וטיפים לניצול נתוני המשוב. מפגשי "מורה מלמד מורה".</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">חוסר ביטחון בשימוש במערכת משוב דינמית (תהליך 4)</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-control">📊 בקרה</span>
+                            <span class="action-title editable">ד. מדידת מעורבות ושביעות רצון</span>
+                        </div>
+                        <p class="editable">מעקב ספציפי: כמה אירועי למידה נוצרו (תהליך 1), תדירות שימוש בממשק אינטראקטיבי (תהליך 3), שיעור מורים המשתמשים בדוחות משוב (תהליך 4).</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">זיהוי מורים שאינם משתמשים בתהליכים המרכזיים</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="risk-card">
+                <div class="risk-header">
+                    <div class="risk-title editable">4️⃣ אתגר איכות פדגוגית: פערים בין תלמידים והשפעה על שוויון</div>
+                    <div class="risk-severity severity-medium editable">בינונית 🟠</div>
+                </div>
+
+                <div class="risk-score">
+                    <strong>חישוב חומרה:</strong>
+                    <div class="risk-score-grid">
+                        <div class="score-item">
+                            <div class="editable">הסתברות</div>
+                            <div class="score-value editable">7/10</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="editable">עוצמת נזק</div>
+                            <div class="score-value editable">6/10</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="editable">חומרה</div>
+                            <div class="score-value editable">42</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-description">
+                    <strong>🔗 קשור למטרה:</strong> <span class="editable">תהליך 2 (עיצוב מסלול למידה - התאמות דינמיות בהתאם לביצועים וניטור חכם לזיהוי מגמות)</span>
+                </div>
+
+                <div class="risk-description">
+                    <strong>תיאור הסיכון:</strong>
+                    <p class="editable">המערכת משתמשת ב<strong>ניטור חכם לזיהוי מגמות</strong> ומציעה <strong>התאמות דינמיות במסלול הלמידה</strong>. אם האלגוריתמים לא יכוונו נכון, או אם לא יהיה מנגנון "אנושי" לפיקוח, עלולה להיווצר מצב שבו תלמידים חזקים מקבלים תוכן מתקדם ומתקדמים מהר, בעוד תלמידים חלשים נתקעים במסלולים בסיסיים ומפגרים יותר ויותר.</p>
+                </div>
+
+                <div class="risk-impacts">
+                    <h4>📉 השלכות אפשריות:</h4>
+                    <ul>
+                        <li class="editable">הרחבת פערי הישגים במקום צמצומם</li>
+                        <li class="editable">תלמידים חלשים מקבלים "תווית" של מסלול נמוך</li>
+                        <li class="editable">תחושת תסכול והפחתת מוטיבציה</li>
+                        <li class="editable">ביקורת ציבורית על אי-שוויון דיגיטלי</li>
+                    </ul>
+                </div>
+
+                <div class="risk-impacts">
+                    <h4>💡 הזדמנויות:</h4>
+                    <ul>
+                        <li class="editable">לפתח מנגנונים לזיהוי מוקדם של תלמידים הנושרים</li>
+                        <li class="editable">ליצור מסלולי תמיכה ייעודיים לאוכלוסיות מוחלשות</li>
+                        <li class="editable">להוכיח את יכולת המערכת לסייע לכל תלמיד</li>
+                    </ul>
+                </div>
+
+                <div class="mitigation-actions">
+                    <h4>🔧 פעילויות מתקנות:</h4>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-planning">📐 תכנון</span>
+                            <span class="action-title editable">א. הגדרת קריטריונים לשוויון ונגישות</span>
+                        </div>
+                        <p class="editable">כיול אלגוריתם הניטור החכם: לא להציע מסלול "קל" מדי מהר, לתת הזדמנויות שניות. הגדרת מדדי הצלחה: צמצום סטיית תקן בהישגים בין קבוצות. עיצוב אוניברסלי (UDL) בכל התבניות.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">ההתאמות הדינמיות יוצרות פערים (תהליך 2 - ניטור חכם)</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-execution">⚙️ ביצוע</span>
+                            <span class="action-title editable">ב. ליווי אינטנסיבי לאוכלוסיות מוחלשות</span>
+                        </div>
+                        <p class="editable">תלמידים בסיכון מקבלים ליווי אנושי נוסף מעבר למערכת: מורה מלווה שבודק את ההתראות מהניטור החכם ומתאים את מסלול הלמידה ידנית במידת הצורך.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">תלות יתר באלגוריתם ללא פיקוח אנושי (תהליך 2)</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-control">📊 בקרה</span>
+                            <span class="action-title editable">ג. ניטור פערים והתערבות מוקדמת</span>
+                        </div>
+                        <p class="editable">דוחות חודשיים: השוואת התקדמות בין קבוצות חזקות/חלשות. מעקב אחר "מסלולי השמה" - האם תלמידים חלשים נתקעים במסלולים נמוכים? התראות למורים על נשירה או תחושת תסכול.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">אי-זיהוי בזמן של פערים מתרחבים (תהליך 2 - דוחות מפורטים)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-header">
+                📁 קטגוריה ג': סיכונים ארגוניים ורגולטוריים
+            </div>
+
+            <div class="risk-card">
+                <div class="risk-header">
+                    <div class="risk-title editable">5️⃣ אתגר ארגוני: תיאום חלש בין הגורמים המעורבים</div>
+                    <div class="risk-severity severity-medium editable">בינונית 🟠</div>
+                </div>
+
+                <div class="risk-score">
+                    <strong>חישוב חומרה:</strong>
+                    <div class="risk-score-grid">
+                        <div class="score-item">
+                            <div class="editable">הסתברות</div>
+                            <div class="score-value editable">8/10</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="editable">עוצמת נזק</div>
+                            <div class="score-value editable">5/10</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="editable">חומרה</div>
+                            <div class="score-value editable">40</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-description">
+                    <strong>🔗 קשור למטרה:</strong> <span class="editable">כל התהליכים (דורשים תיאום בין: צוותי פיתוח ממשקים, ספקי תוכן לתבניות, מפמ"רים, מורים משתמשים, צוות IT)</span>
+                </div>
+
+                <div class="risk-description">
+                    <strong>תיאור הסיכון:</strong>
+                    <p class="editable">הפרויקט מערב גורמים רבים עם אחריות משותפת: מי אחראי על <strong>ספריית התבניות המודולריות</strong> (תהליך 1)? מי מעדכן את <strong>מנגנון ההמלצות האוטומטיות</strong> (תהליך 1)? מי מפקח על <strong>הניטור החכם</strong> (תהליך 2)? מי אחראי על <strong>לוחות הדיון והקהילה</strong> (תהליך 3)? ללא תיאום הדוק, עלולים להיווצר כפילויות, חוסר אחריות, או עיכובים.</p>
+                </div>
+
+                <div class="risk-impacts">
+                    <h4>📉 השלכות אפשריות:</h4>
+                    <ul>
+                        <li class="editable">תבניות למידה לא מתעדכנות - אחריות לא ברורה (תהליך 1)</li>
+                        <li class="editable">בעיות בניטור לא מטופלות - אף אחד לא אחראי (תהליך 2)</li>
+                        <li class="editable">תקלות בממשק אינטראקטיבי - ספק או IT? (תהליך 3)</li>
+                        <li class="editable">עיכובים ובזבוז משאבים</li>
+                    </ul>
+                </div>
+
+                <div class="mitigation-actions">
+                    <h4>🔧 פעילויות מתקנות:</h4>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-planning">📐 תכנון</span>
+                            <span class="action-title editable">א. הגדרת מבנה ממשל ברור</span>
+                        </div>
+                        <p class="editable">RACI Matrix מפורטת: מי אחראי (Responsible) על עדכון ספריית התבניות? מי מאושר (Accountable) לשינויים בניטור החכם? מי מתייעץ (Consulted) בנושא הממשק האינטראקטיבי? מי מתעדכן (Informed)?</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">חוסר בהירות באחריות על רכיבים קריטיים (תהליכים 1-4)</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-execution">⚙️ ביצוע</span>
+                            <span class="action-title editable">ב. ישיבות תיאום תקופתיות</span>
+                        </div>
+                        <p class="editable">ישיבה שבועית: סטטוס ממשק העיצוב והתבניות (תהליך 1), בעיות בניטור (תהליך 2), תקלות בממשק אינטראקטיבי (תהליך 3), משוב מהשטח (תהליך 4). דוח מסכם לכל בעלי עניין.</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">קושי בתקשורת שוטפת על כל התהליכים</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <span class="action-phase phase-control">📊 בקרה</span>
+                            <span class="action-title editable">ג. מעקב אחר מדדי ביצוע ואבני דרך</span>
+                        </div>
+                        <p class="editable">Dashboard משותף עם KPIs: מספר תבניות בספרייה (תהליך 1), אחוז תקינות ניטור חכם (תהליך 2), זמינות ממשק אינטראקטיבי (תהליך 3), זמן מענה למשוב (תהליך 4).</p>
+                        <div class="action-component">
+                            <strong>מרכיב סיכון:</strong> <span class="editable">קושי לזהות בעיות ספציפיות בכל תהליך</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-box">
+                <h2>📊 סיכום רמות חומרה</h2>
+                <div class="summary-stats">
+                    <div class="stat-card">
+                        <div class="stat-number editable">3</div>
+                        <div class="stat-label editable">🔴 סיכונים ברמה גבוהה (63-72)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number editable">2</div>
+                        <div class="stat-label editable">🟠 סיכונים ברמה בינונית (40-42)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number editable">0</div>
+                        <div class="stat-label editable">🟢 סיכונים ברמה נמוכה (1-24)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📋 סיכום פעילויות מתקנות לפי שלבי פיילוט</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="editable">שלב</th>
+                            <th class="editable">פעילויות עיקריות</th>
+                            <th class="editable">אחראי</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>📐 תכנון</strong></td>
+                            <td class="editable">
+                                • בדיקות QA: ממשק עיצוב, קישור לפרופילים, ניטור חכם<br>
+                                • תוכנית חירום: גיבוי נתוני מעקב ורצף למידה<br>
+                                • DPIA: רמת רגישות כל סוג נתון (פרופילים, היסטוריה, הערכה)<br>
+                                • הצפנה: נתוני הערכה דינמיים וניטור חכם<br>
+                                • מיפוי חששות: נוחות עם גרירה-שיבוץ וממשק אינטראקטיבי<br>
+                                • הכשרה מדורגת: 3 רמות (בסיס → מתקדם → מומחה)<br>
+                                • קריטריונים לשוויון: כיול אלגוריתם ניטור חכם<br>
+                                • RACI Matrix: אחריות על כל רכיב (תבניות, ניטור, ממשק)
+                            </td>
+                            <td class="editable">מנהל פרויקט + צוות טכני + מפמ"רים</td>
+                        </tr>
+                        <tr>
+                            <td><strong>⚙️ ביצוע</strong></td>
+                            <td class="editable">
+                                • SLA ממוקד: תקלות ממשק אינטראקטיבי - שעה, משוב - 2 שעות<br>
+                                • הדרכות אבטחה: שיתוף מסכים בממשק אינטראקטיבי<br>
+                                • קהילת תרגול: שיתוף תבניות, התערבויות, טיפים למשוב<br>
+                                • ליווי אינטנסיבי: פיקוח אנושי על התראות ניטור חכם<br>
+                                • תיאום שבועי: סטטוס כל תהליך (תבניות, ניטור, ממשק, משוב)
+                            </td>
+                            <td class="editable">צוות פדגוגי + תמיכה טכנית + ספקים</td>
+                        </tr>
+                        <tr>
+                            <td><strong>📊 בקרה</strong></td>
+                            <td class="editable">
+                                • ניטור ספציפי: זמני תגובה עיצוב, הצלחת קישור לפרופילים<br>
+                                • לוגים מפורטים: גישה לפרופילים, היסטוריה, דוחות הערכה<br>
+                                • מעקב מעורבות: אירועי למידה נוצרו, שימוש ממשק, דוחות משוב<br>
+                                • ניטור פערים: השוואת קבוצות, זיהוי נתקעות במסלולים<br>
+                                • Dashboard KPIs: תבניות בספרייה, תקינות ניטור, זמינות ממשק
+                            </td>
+                            <td class="editable">מנהל פרויקט + צוות בקרה + מפמ"רים</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>💡 סיכום והמלצות</h2>
+                <div class="editable">
+                    <p><strong>פרויקט 720</strong> הוא יוזמה חדשנית ומורכבת עם פוטנציאל רב לשינוי מהותי בחינוך. הסיכונים המזוהים הם טבעיים לפרויקטים טכנולוגיים-חינוכיים מסוג זה, אך ניתנים לניהול יעיל בעזרת תכנון מוקדם, ביצוע זהיר, ובקרה שוטפת.</p>
+                    
+                    <h3>🎯 המלצות מרכזיות:</h3>
+                    <ol style="padding-right: 20px; line-height: 2;">
+                        <li><strong>התחל בפיילוט מצומצם ומבוקר</strong> - בחר 3-5 בתי ספר מייצגים, עם מורים מוכנים, לבדיקת המערכת בתנאי שטח אמיתיים לפני הרחבה.</li>
+                        <li><strong>השקע בהכשרה והטמעה</strong> - הצלחת הפרויקט תלויה במורים. הקצה משאבים משמעותיים לליווי, הדרכה, ויצירת קהילת תרגול.</li>
+                        <li><strong>בנה מערך תמיכה טכנית חזק</strong> - SLA ברור, מוקד תמיכה זמין, ותהליכי תיקון מהירים הם קריטיים להצלחה.</li>
+                        <li><strong>עקוב אחר שוויון ופערים</strong> - ודא שהמערכת באמת מצמצמת פערים ולא מרחיבה אותם. ניטור רציף ומענה מהיר הם חובה.</li>
+                        <li><strong>שמור על אבטחה ופרטיות בראש סדר העדיפויות</strong> - בניית אמון הוא תהליך ארוך, אובדן אמון קורה ברגע. אבטחת מידע חייבת להיות בלתי מתפשרת.</li>
+                        <li><strong>למד ושפר באופן רציף</strong> - הפיילוט הוא הזדמנות ללמידה. איסוף משוב, ניתוח נתונים, והתאמות דינמיות יובילו להצלחה ארוכת טווח.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>פיתוח ועיצוב המוצר: ד"ר אסף אוזן</strong></p>
+            <p style="margin-top: 10px; font-size: 0.9em;">דוח זה נוצר במסגרת תהליך ניהול סיכונים לפרויקט 720</p>
+        </div>
     </div>
 
     <script>
-        let isEditMode = false;
+        let editMode = false;
+        let originalContent = {};
 
-        function enableEditing() {
-            isEditMode = !isEditMode;
-            const editables = document.querySelectorAll('.editable');
+        function toggleEditMode() {
+            editMode = !editMode;
+            document.body.classList.toggle('edit-mode', editMode);
             
-            editables.forEach(el => {
-                if (isEditMode) {
-                    el.contentEditable = true;
-                    el.style.outline = '1px dashed #3498db';
-                } else {
-                    el.contentEditable = false;
-                    el.style.outline = 'none';
-                }
-            });
-
-            const btn = event.target;
-            btn.textContent = isEditMode ? '💾 שמור שינויים' : '✏️ מצב עריכה';
-            btn.style.background = isEditMode ? 
-                'linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)' : 
-                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            const editBtn = document.querySelector('.btn-edit');
+            const saveBtn = document.querySelector('.btn-save');
+            const cancelBtn = document.querySelector('.btn-cancel');
+            const indicator = document.querySelector('.edit-mode-indicator');
+            
+            if (editMode) {
+                // Save original content
+                document.querySelectorAll('.editable').forEach(el => {
+                    originalContent[el.textContent] = el.textContent;
+                    el.contentEditable = 'true';
+                });
+                
+                editBtn.style.display = 'none';
+                saveBtn.style.display = 'inline-flex';
+                cancelBtn.style.display = 'inline-flex';
+                indicator.style.display = 'block';
+            } else {
+                document.querySelectorAll('.editable').forEach(el => {
+                    el.contentEditable = 'false';
+                });
+                
+                editBtn.style.display = 'inline-flex';
+                saveBtn.style.display = 'none';
+                cancelBtn.style.display = 'none';
+                indicator.style.display = 'none';
+            }
         }
 
-        function saveAsHTML() {
-            const message = `להורדת הדוח כקובץ HTML:
+        function saveChanges() {
+            if (confirm('האם לשמור את השינויים?')) {
+                toggleEditMode();
+                originalContent = {};
+                alert('השינויים נשמרו בהצלחה!');
+            }
+        }
 
-1. לחץ Ctrl+A (בחר הכל)
-2. לחץ Ctrl+C (העתק)
-3. פתח Notepad או עורך טקסט
-4. לחץ Ctrl+V (הדבק)
-5. שמור כקובץ .html
+        function cancelEdit() {
+            if (confirm('האם לבטל את כל השינויים?')) {
+                document.querySelectorAll('.editable').forEach(el => {
+                    if (originalContent[el.textContent]) {
+                        el.textContent = originalContent[el.textContent];
+                    }
+                });
+                toggleEditMode();
+                originalContent = {};
+            }
+        }
 
-לחלופין:
-1. לחץ כפתור ימני על הדף
-2. בחר 'Save as' או 'שמור בשם'
-3. בחר 'Webpage, Complete'`;
-            
-            alert(message);
+        function exportHTML() {
+            const content = document.documentElement.outerHTML;
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'risk_report_project_720.html';
+            a.click();
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>
